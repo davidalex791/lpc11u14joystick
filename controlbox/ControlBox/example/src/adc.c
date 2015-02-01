@@ -141,6 +141,16 @@ int ADCConvert(void)
 			break;
 		}
 	}
+#if 0 //test usb packet
+	static uint32_t cnt = 0;
+	static uint16_t d = 0;
+	if(cnt++ > 10)
+	{
+		d++;
+	}
+	ADCout[4] = d;
+	ADCout[5] = ~d;
+#endif
 	return 0;
 }
 
