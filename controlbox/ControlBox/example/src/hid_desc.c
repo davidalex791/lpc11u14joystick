@@ -71,6 +71,7 @@ const uint8_t Mouse_ReportDescriptor[] = {
 	HID_EndCollection,
 };*/
 
+#if 1
 const uint8_t Mouse_ReportDescriptor[] = {
 	HID_UsagePage(HID_USAGE_PAGE_GENERIC),
 	HID_LogicalMin(0),
@@ -108,7 +109,47 @@ const uint8_t Mouse_ReportDescriptor[] = {
 		HID_Input(HID_Data | HID_Variable | HID_Absolute),
 	HID_EndCollection,
 };
+#endif
+#if 0
+const uint8_t Mouse_ReportDescriptor[] = {
+	HID_UsagePage(HID_USAGE_PAGE_GENERIC),
+	HID_Usage(HID_USAGE_GENERIC_GAMEPAD),
+	HID_Collection(HID_Application),
+		HID_Collection(HID_Physical),
+			HID_UsagePage(HID_USAGE_PAGE_SIMULATION),
+			HID_Usage(HID_USAGE_SIMULATION_THROTTLE),//S1
+			HID_LogicalMin((uint8_t)-127),
+			HID_LogicalMax(127),
+			HID_ReportSize(8),
+			HID_ReportCount(1),
+			HID_Input(HID_Data | HID_Variable | HID_Absolute),
+			HID_UsagePage(HID_USAGE_PAGE_GENERIC),
+			//HID_Usage(HID_USAGE_GENERIC_GAMEPAD),
+			HID_Usage(HID_USAGE_GENERIC_X),//S4_V
+			HID_Usage(HID_USAGE_GENERIC_Y),//S5_H
+			HID_Usage(HID_USAGE_GENERIC_Z),//S3
+			HID_Usage(HID_USAGE_GENERIC_RX),//P1
+			HID_Usage(HID_USAGE_GENERIC_RY),//P2
+			HID_Usage(HID_USAGE_GENERIC_RZ),//P3
+			HID_Usage(HID_USAGE_GENERIC_SLIDER),//S2
+			HID_ReportCount(7),
+			HID_Input(HID_Data | HID_Variable | HID_Absolute),
+			HID_UsagePage(HID_USAGE_PAGE_BUTTON),
+			HID_UsageMin(1),
+			HID_UsageMax(40),
+			HID_LogicalMin(0),
+			HID_LogicalMax(1),
+			HID_ReportCount(40),
+			HID_ReportSize(1),
 
+			//HID_UnitExponent(0),
+			//HID_Unit(0),
+			HID_Input(HID_Data | HID_Variable | HID_Absolute),
+		HID_EndCollection,
+	HID_EndCollection,
+};
+
+#endif
 const uint16_t Mouse_ReportDescSize = sizeof(Mouse_ReportDescriptor);
 
 /**
@@ -149,7 +190,7 @@ ALIGNED(4) uint8_t USB_FsConfigDescriptor[] = {
 	0x01,							/* bConfigurationValue */
 	0x00,							/* iConfiguration */
 	USB_CONFIG_SELF_POWERED,		/* bmAttributes */
-	USB_CONFIG_POWER_MA(2),			/* bMaxPower */
+	USB_CONFIG_POWER_MA(230),			/* bMaxPower 2*/
 
 	/* Interface 0, Alternate Setting 0, HID Class */
 	USB_INTERFACE_DESC_SIZE,		/* bLength */
@@ -158,8 +199,8 @@ ALIGNED(4) uint8_t USB_FsConfigDescriptor[] = {
 	0x00,							/* bAlternateSetting */
 	0x01,							/* bNumEndpoints */
 	USB_DEVICE_CLASS_HUMAN_INTERFACE,	/* bInterfaceClass */
-	HID_SUBCLASS_BOOT,				/* bInterfaceSubClass */
-	HID_PROTOCOL_MOUSE,				/* bInterfaceProtocol */
+	HID_SUBCLASS_BOOT, 				/* bInterfaceSubClass */
+	HID_PROTOCOL_MOUSE, 				/* bInterfaceProtocol */
 	0x04,							/* iInterface */
 	/* HID Class Descriptor */
 	/* HID_DESC_OFFSET = 0x0012 */
@@ -175,7 +216,7 @@ ALIGNED(4) uint8_t USB_FsConfigDescriptor[] = {
 	USB_ENDPOINT_DESCRIPTOR_TYPE,	/* bDescriptorType */
 	HID_EP_IN,						/* bEndpointAddress */
 	USB_ENDPOINT_TYPE_INTERRUPT,	/* bmAttributes */
-	WBVAL(0x0008),					/* wMaxPacketSize */
+	WBVAL(0x0010),					/* wMaxPacketSize */
 	HID_MOUSE_REPORT_INTERVAL,		/* bInterval */
 	/* Terminator */
 	0								/* bLength */

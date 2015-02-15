@@ -50,7 +50,7 @@ uint64_t KeyboardScan(void)
 {
 	uint8_t key = 0;
 	uint64_t scan = 0;
-	for(uint8_t j = 0; j < sizeof(out); j++)
+	for(uint8_t j = 0; j < sizeof(out)/sizeof(out[0]); j++)
 	{
 		for(uint8_t o = 0; o < sizeof(out)/sizeof(out[0]); o++)
 		{
@@ -80,6 +80,10 @@ uint64_t KeyboardScan(void)
 		cnt = 0;
 	}
 	scan = d;
+	static bool bb = 0;
+	bb = !bb;
+//	Board_LED_Set(0, bb);
+
 #endif
 	return scan;
 }

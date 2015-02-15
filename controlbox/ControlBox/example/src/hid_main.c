@@ -135,7 +135,7 @@ int main(void)
 	Board_Init();
 
 	Init_ADC();
-	DEBUGSTR("ADC Demo\r\n");
+	DEBUGSTR("ControlBox\r\n");
 
 
 	/* enable keyboard */
