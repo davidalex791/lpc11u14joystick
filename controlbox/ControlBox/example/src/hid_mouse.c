@@ -65,7 +65,7 @@ extern const uint16_t Mouse_ReportDescSize;
 
 int8_t Remap(uint16_t adc)
 {
-	return -127 + (int8_t)(adc/4);//(adc*(256/1024));//adc=[0-1023]
+	return -127 + (adc*254/1023);//(adc*(256/1024));//adc=[0-1023] but joystick range needs to be [-127, 127]
 }
 /* Routine to update mouse state report */
 static void Mouse_UpdateReport(void)
