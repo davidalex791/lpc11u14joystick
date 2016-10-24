@@ -36,7 +36,16 @@
 
 /*****************************************************************************
  * Private types/enumerations/variables
+ *
  ****************************************************************************/
+#define MAX_AVG 5
+
+static uint16_t ADCout[8];
+static uint8_t idx = 0;//averaging
+
+static uint16_t adcSampler[8][MAX_AVG];
+static uint32_t adcSum[8];
+
 
 static ADC_CLOCK_SETUP_T ADCSetup;
 
@@ -72,6 +81,17 @@ void Init_ADC(void)
 
 	/* ADC Init */
 	Chip_ADC_Init(LPC_ADC, &ADCSetup);
+
+	//clear buffers
+	for(uint8_t i = 0; i < 8; i++)
+	{
+		ADCout[i] = 0;
+		adcSum[i] = 0;
+		for(uint8_t j = 0; j < MAX_AVG; j++)
+		{
+			adcSampler[i][j] = 0;
+		}
+	}
 }
 
 /*****************************************************************************
@@ -82,7 +102,6 @@ void Init_ADC(void)
  * @brief	main routine for ADC example
  * @return	Function should not exit
  */
-static uint16_t ADCout[8];
 uint16_t GetADC(uint8_t ch)
 {
 	if(ch < sizeof(ADCout)/sizeof(ADCout[0]))
@@ -113,22 +132,30 @@ int ADCConvert(void)
 		}
 		case WAIT:
 		{
+			uint8_t newidx = (idx+1) % MAX_AVG;			//rotate index;
 			/* Waiting for A/D conversion complete */
 			if(Chip_ADC_ReadStatus(LPC_ADC, ch, ADC_DR_DONE_STAT) != SET)
 			{
 				break;
 			}
 			/* Read ADC value */
-			Chip_ADC_ReadValue(LPC_ADC, ch, &ADCout[ch]);
+			Chip_ADC_ReadValue(LPC_ADC, ch, &adcSampler[ch][idx]);
 
 
 			/* Print ADC value */
-			DEBUGOUT("ADC value ch:%d = 0x%x\r\n", ch, ADCout[ch]);
+			DEBUGOUT("ADC value ch:%d = 0x%x\r\n", ch, adcSampler[ch][idx]);
 
 			Chip_ADC_EnableChannel(LPC_ADC, ch, DISABLE); //unselect channel
 
+			//calculate moving average
+			adcSum[ch] += adcSampler[ch][idx]; //add newest
+			adcSum[ch] -= adcSampler[ch][newidx]; //remove oldest
+
+			ADCout[ch] = adcSum[ch] / MAX_AVG;//calculate average
+
 			if(++ch > ADC_CH7)	//move to next channel
 			{
+				idx = newidx;//increase avg index when all channels have data
 				ch = ADC_CH0;
 			}
 

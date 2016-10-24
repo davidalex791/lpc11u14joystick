@@ -49,7 +49,7 @@ void KeyboardInit(void)
 uint64_t KeyboardScan(void)
 {
 	uint8_t key = 0;
-	uint64_t scan = 0;
+	static uint64_t scan = 0;
 	for(uint8_t j = 0; j < sizeof(out)/sizeof(out[0]); j++)
 	{
 		for(uint8_t o = 0; o < sizeof(out)/sizeof(out[0]); o++)
@@ -61,6 +61,10 @@ uint64_t KeyboardScan(void)
 			if(Chip_GPIO_ReadPortBit(LPC_GPIO, ins[i].port, ins[i].pin) == 1)
 			{
 				scan |= (uint64_t)1 << key;
+			}
+			else
+			{
+				scan &= ~((uint64_t)1 << key);
 			}
 			key++;
 		}
