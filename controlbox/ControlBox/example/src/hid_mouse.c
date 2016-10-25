@@ -36,6 +36,7 @@
 #include "hid_mouse.h"
 #include "adc.h"
 #include "keyboard.h"
+#include "periodictimer.h"
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -47,6 +48,7 @@ typedef struct {
 	USBD_HANDLE_T hUsb;	/*!< Handle to USB stack. */
 	uint8_t report[MOUSE_REPORT_SIZE];	/*!< Last report data  */
 	uint8_t tx_busy;	/*!< Flag indicating whether a report is pending in endpoint queue. */
+	uint32_t tmo;		/*!< Timer to track when to send next report. */
 } Mouse_Ctrl_T;
 
 /** Singleton instance of mouse control */
@@ -186,25 +188,34 @@ ErrorCode_t Mouse_Init(USBD_HANDLE_T hUsb,
 	/* store stack handle for later use. */
 	g_mouse.hUsb = hUsb;
 
+	/* start the mouse timer */
+	g_mouse.tmo =  periodictimer_Get();
+
 	return ret;
 }
 
 /* Mouse tasks */
 void Mouse_Tasks(void)
 {
-	/* check device is configured before sending report. */
-	if ( USB_IsConfigured(g_mouse.hUsb)) {
-		if (g_mouse.tx_busy == 0) {
-			/* update report based on board state */
-			Mouse_UpdateReport();
-			/* send report data */
-			g_mouse.tx_busy = 1;
-			USBD_API->hw->WriteEP(g_mouse.hUsb, HID_EP_IN, &g_mouse.report[0], MOUSE_REPORT_SIZE);
+	/* check if mouse report timer expired */
+	if (periodictimer_IsExpired(g_mouse.tmo, 10))//10ms
+	{
+		/* reset timer */
+		g_mouse.tmo = periodictimer_Get();
+
+		/* check device is configured before sending report. */
+		if ( USB_IsConfigured(g_mouse.hUsb)) {
+			if (g_mouse.tx_busy == 0) {
+				/* update report based on board state */
+				Mouse_UpdateReport();
+				/* send report data */
+				g_mouse.tx_busy = 1;
+				USBD_API->hw->WriteEP(g_mouse.hUsb, HID_EP_IN, &g_mouse.report[0], MOUSE_REPORT_SIZE);
+			}
+		}
+		else {
+			/* reset busy flag if we get disconnected. */
+			g_mouse.tx_busy = 0;
 		}
 	}
-	else {
-		/* reset busy flag if we get disconnected. */
-		g_mouse.tx_busy = 0;
-	}
-
 }
