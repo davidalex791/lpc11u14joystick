@@ -29,14 +29,14 @@ all: nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.axf
 nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -L"C:\Users\david_000\Documents\LPCXpresso_7.5.0_254\lpc11u14joystick\controlbox\nxp_lpcxpresso_11u14_board_lib\Debug" -L"C:\Users\david_000\Documents\LPCXpresso_7.5.0_254\lpc11u14joystick\controlbox\lpc_chip_11uxx_lib\Debug" -L"C:\Users\david_000\Documents\LPCXpresso_7.5.0_254\lpc11u14joystick\controlbox\lpc_chip_11uxx_lib\libs" -Xlinker -Map="nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.map" -Xlinker --gc-sections -mcpu=cortex-m0 -mthumb -T "nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard_Debug.ld" -o "nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -L"M:\OneDrive\lpc11u14joystick\controlbox\nxp_lpcxpresso_11u14_board_lib\Debug" -L"M:\OneDrive\lpc11u14joystick\controlbox\lpc_chip_11uxx_lib\Debug" -L"M:\OneDrive\lpc11u14joystick\controlbox\lpc_chip_11uxx_lib\libs" -Xlinker -Map="nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.map" -Xlinker --gc-sections -mcpu=cortex-m0 -mthumb -T "nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard_Debug.ld" -o "nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.axf
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) nxp_lpcxpresso_11u14_usbd_lib_hid_keyboard.axf
 	-@echo ' '
 
 post-build:

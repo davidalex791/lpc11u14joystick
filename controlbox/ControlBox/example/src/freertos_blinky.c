@@ -36,6 +36,9 @@
 #include "adc.h"
 #include "keyboard.h"
 #include "hid_mouse.h"
+
+#include "periodictimer.h"
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -57,7 +60,7 @@ static void vLEDTask0(void *pvParameters)
 		Board_LED_Set(0, 1);
 		vTaskDelay(configTICK_RATE_HZ/8);
 		Board_LED_Set(0, 0);
-		vTaskDelay(configTICK_RATE_HZ - configTICK_RATE_HZ/8);
+		vTaskDelay(/*configTICK_RATE_HZ - */configTICK_RATE_HZ/8);
 	}
 }
 
@@ -95,6 +98,9 @@ int InitOS(void)
 	xTaskCreate(vUSBTask1, (signed char *) "vUSBTask1",
 				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
+
+	/* start 1ms timer */
+	periodictimer_Init();
 
 	/* Start the scheduler */
 	vTaskStartScheduler();
