@@ -1,10 +1,10 @@
 /*
  * GENERATED FILE - DO NOT EDIT
  * (c) Code Red Technologies Ltd, 2008-13
- * (c) NXP Semiconductors 2013-2015
+ * (c) NXP Semiconductors 2013-2016
  * Generated linker script file for LPC11U14/201
- * Created from LibIncTemplate.ld (LPCXpresso v7.5 (0 [Build 254] [2014-10-31] ))
- * By LPCXpresso v7.5.0 [Build 254] [2014-10-31]  on Sat Feb 14 09:10:37 GMT 2015
+ * Created from LibIncTemplate.ld (LPCXpresso v7.6 (2 [Build 326] [2015-02-02] ))
+ * By LPCXpresso v7.6.2 [Build 326] [2015-02-02]  on Thu Oct 27 20:25:01 BST 2016
  */
 
 
