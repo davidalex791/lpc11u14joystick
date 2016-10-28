@@ -132,14 +132,14 @@ int ADCConvert(void)
 		}
 		case WAIT:
 		{
-			uint8_t newidx = (idx+1) % MAX_AVG;			//rotate index;
+			uint16_t sample = 0;
 			/* Waiting for A/D conversion complete */
 			if(Chip_ADC_ReadStatus(LPC_ADC, ch, ADC_DR_DONE_STAT) != SET)
 			{
 				break;
 			}
 			/* Read ADC value */
-			Chip_ADC_ReadValue(LPC_ADC, ch, &adcSampler[ch][idx]);
+			Chip_ADC_ReadValue(LPC_ADC, ch, &sample);
 
 
 			/* Print ADC value */
@@ -148,14 +148,15 @@ int ADCConvert(void)
 			Chip_ADC_EnableChannel(LPC_ADC, ch, DISABLE); //unselect channel
 
 			//calculate moving average
-			adcSum[ch] += adcSampler[ch][idx]; //add newest
-			adcSum[ch] -= adcSampler[ch][newidx]; //remove oldest
+			adcSum[ch] -= adcSampler[ch][idx]; //remove oldest
+			adcSum[ch] += sample; //add newest
+			adcSampler[ch][idx] = sample;
 
-			ADCout[ch] = adcSum[ch] / MAX_AVG;//calculate average
+			ADCout[ch] = adcSum[ch] / (MAX_AVG);//calculate average for sample
 
 			if(++ch > ADC_CH7)	//move to next channel
 			{
-				idx = newidx;//increase avg index when all channels have data
+				idx = (idx+1) % MAX_AVG;	//increase avg index when all channels have data
 				ch = ADC_CH0;
 			}
 

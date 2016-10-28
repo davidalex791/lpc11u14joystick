@@ -58,7 +58,7 @@ uint64_t KeyboardScan(void)
 		}
 		for(uint8_t i = 0; i < sizeof(ins)/sizeof(ins[0]); i++)
 		{
-			if(Chip_GPIO_ReadPortBit(LPC_GPIO, ins[i].port, ins[i].pin) == 1)
+			if(Chip_GPIO_GetPinState(LPC_GPIO, ins[i].port, ins[i].pin) == 1)
 			{
 				scan |= (uint64_t)1 << key;
 			}
